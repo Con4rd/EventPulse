@@ -1,7 +1,6 @@
 from flask import Flask, redirect, request, jsonify, session
 import requests
 
-IBWQA7U7G6676YYYP46L
 
 app = Flask(__name__)
 app.secret_key = b'i\x9c\xac\t\xcd\xa7nM\xc3\x91\xd7\xbd\xa9b+\xefYgNj\x97\x0b\xfb\xd4'
