@@ -1,7 +1,10 @@
-from flask import Flask, redirect, request, jsonify
+from flask import Flask, redirect, request, jsonify, session
 import requests
 
+IBWQA7U7G6676YYYP46L
+
 app = Flask(__name__)
+app.secret_key = b'i\x9c\xac\t\xcd\xa7nM\xc3\x91\xd7\xbd\xa9b+\xefYgNj\x97\x0b\xfb\xd4'
 
 # Configuration
 EVENTBRITE_CLIENT_ID = 'XLMYVXWAPWGJQZGGL4'
@@ -24,6 +27,8 @@ def oauth_callback():
     code = request.args.get('code')
     if code:
         token_response = get_token(code)
+        session['access_token'] = token_response.get('access_token')
+        print(session.get('access_token'))  # Print the access token to verify it's set
         return jsonify(token_response)
     else:
         return 'Authorization failed.'
@@ -43,19 +48,24 @@ def get_token(code):
     response = requests.post(token_url, data=payload, headers=headers)
     return response.json()
 
-def fetch_eventbrite_events(access_token):
+def fetch_eventbrite_events(access_token, query='technology'):
     headers = {
         'Authorization': f'Bearer {access_token}'
     }
-    response = requests.get(EVENTBRITE_API_URL, headers=headers)
+    params = {
+        'q': query  # General search term
+    }
+    response = requests.get(EVENTBRITE_API_URL, headers=headers, params=params)
+    print(response.json())  # Print the response from Eventbrite API to debug
     return response.json()
 
 @app.route('/api/events', methods=['GET'])
 def get_events():
-    access_token = request.args.get('access_token')
+    access_token = session.get('access_token')
     if not access_token:
-        return jsonify({'error': 'Access token is required'}), 400
-    events = fetch_eventbrite_events(access_token)
+        return redirect('/authorize')  # Redirect to authorization if no token is available
+    query = request.args.get('query', 'technology')  # Default to 'technology' if not provided
+    events = fetch_eventbrite_events(access_token, query)
     parsed_events = parse_event_data(events)
     return jsonify({'events': parsed_events})
 
