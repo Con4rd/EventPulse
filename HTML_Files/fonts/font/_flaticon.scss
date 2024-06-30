@@ -1,0 +1,124 @@
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 17/02/2021 11:41
+    */
+
+    @font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff2") format("woff2"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
+
+    .flaticon-cutlery:before { content: "\f100"; }
+.flaticon-shopping-bag:before { content: "\f101"; }
+.flaticon-tent:before { content: "\f102"; }
+.flaticon-desk-bell:before { content: "\f103"; }
+.flaticon-mirror:before { content: "\f104"; }
+.flaticon-brake:before { content: "\f105"; }
+.flaticon-love:before { content: "\f106"; }
+.flaticon-zoom:before { content: "\f107"; }
+.flaticon-pin:before { content: "\f108"; }
+.flaticon-phone:before { content: "\f109"; }
+.flaticon-loupe:before { content: "\f10a"; }
+.flaticon-avatar:before { content: "\f10b"; }
+.flaticon-find-location:before { content: "\f10c"; }
+.flaticon-comment:before { content: "\f10d"; }
+.flaticon-date:before { content: "\f10e"; }
+.flaticon-email:before { content: "\f10f"; }
+.flaticon-gym:before { content: "\f110"; }
+.flaticon-upload:before { content: "\f111"; }
+.flaticon-link:before { content: "\f112"; }
+.flaticon-credit-card:before { content: "\f113"; }
+.flaticon-wifi:before { content: "\f114"; }
+.flaticon-bike:before { content: "\f115"; }
+.flaticon-disabled:before { content: "\f116"; }
+.flaticon-car:before { content: "\f117"; }
+.flaticon-pawprint:before { content: "\f118"; }
+.flaticon-chat:before { content: "\f119"; }
+.flaticon-logout:before { content: "\f11a"; }
+.flaticon-web-page:before { content: "\f11b"; }
+.flaticon-list:before { content: "\f11c"; }
+.flaticon-note:before { content: "\f11d"; }
+.flaticon-edit:before { content: "\f11e"; }
+.flaticon-delete:before { content: "\f11f"; }
+.flaticon-view:before { content: "\f120"; }
+.flaticon-badge:before { content: "\f121"; }
+.flaticon-bookmark:before { content: "\f122"; }
+.flaticon-arrow-pointing-to-right:before { content: "\f123"; }
+.flaticon-speech-bubble-with-text-lines:before { content: "\f124"; }
+.flaticon-speech-bubble:before { content: "\f125"; }
+.flaticon-office-briefcase:before { content: "\f126"; }
+.flaticon-arrow-pointing-to-up:before { content: "\f127"; }
+.flaticon-arrow-pointing-to-down:before { content: "\f128"; }
+.flaticon-arrow-pointing-to-left:before { content: "\f129"; }
+    
+    $font-Flaticon-cutlery: "\f100";
+    $font-Flaticon-shopping-bag: "\f101";
+    $font-Flaticon-tent: "\f102";
+    $font-Flaticon-desk-bell: "\f103";
+    $font-Flaticon-mirror: "\f104";
+    $font-Flaticon-brake: "\f105";
+    $font-Flaticon-love: "\f106";
+    $font-Flaticon-zoom: "\f107";
+    $font-Flaticon-pin: "\f108";
+    $font-Flaticon-phone: "\f109";
+    $font-Flaticon-loupe: "\f10a";
+    $font-Flaticon-avatar: "\f10b";
+    $font-Flaticon-find-location: "\f10c";
+    $font-Flaticon-comment: "\f10d";
+    $font-Flaticon-date: "\f10e";
+    $font-Flaticon-email: "\f10f";
+    $font-Flaticon-gym: "\f110";
+    $font-Flaticon-upload: "\f111";
+    $font-Flaticon-link: "\f112";
+    $font-Flaticon-credit-card: "\f113";
+    $font-Flaticon-wifi: "\f114";
+    $font-Flaticon-bike: "\f115";
+    $font-Flaticon-disabled: "\f116";
+    $font-Flaticon-car: "\f117";
+    $font-Flaticon-pawprint: "\f118";
+    $font-Flaticon-chat: "\f119";
+    $font-Flaticon-logout: "\f11a";
+    $font-Flaticon-web-page: "\f11b";
+    $font-Flaticon-list: "\f11c";
+    $font-Flaticon-note: "\f11d";
+    $font-Flaticon-edit: "\f11e";
+    $font-Flaticon-delete: "\f11f";
+    $font-Flaticon-view: "\f120";
+    $font-Flaticon-badge: "\f121";
+    $font-Flaticon-bookmark: "\f122";
+    $font-Flaticon-arrow-pointing-to-right: "\f123";
+    $font-Flaticon-speech-bubble-with-text-lines: "\f124";
+    $font-Flaticon-speech-bubble: "\f125";
+    $font-Flaticon-office-briefcase: "\f126";
+    $font-Flaticon-arrow-pointing-to-up: "\f127";
+    $font-Flaticon-arrow-pointing-to-down: "\f128";
+    $font-Flaticon-arrow-pointing-to-left: "\f129";
