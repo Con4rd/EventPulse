@@ -951,7 +951,29 @@
             });
         }
 
+        // Form submission handling
+        $('#home_form').on('submit', function(event) {
+            var search = $('input[name="search"]').val().trim();
+            var location = $('input[name="location"]').val().trim();
+
+            // Ensure location is provided
+            if (!location) {
+                alert('Please enter a location.');
+                return false; // Prevent form submission
+            }
+
+            // Build the URL dynamically based on inputs
+            var url = '/search?location=' + encodeURIComponent(location);
+            if (search) {
+                url += '&search=' + encodeURIComponent(search);
+            }
+
+            // Redirect to the constructed URL
+            window.location.href = url;
+            return false; // Prevent default form submission
+        });
     });
+
     
 /* ======
    When document is loading, do

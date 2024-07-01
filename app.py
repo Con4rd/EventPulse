@@ -1,6 +1,7 @@
 from flask import Flask, render_template, send_from_directory, jsonify, request
 import requests
 import secrets
+from geopy.geocoders import Nominatim
 
 # In this example, we have a Flask application that serves static HTML files from the HTML_Files directory in the project.
 # The HTML files are stored in the HTML_Files directory, and the Flask application is configured to serve these files using the send_from_directory function.
@@ -20,24 +21,18 @@ TICKETMASTER_API_KEY = 'qDV0IOLql9ch2aHpyV5ThqHeXjG5Glcg'
 TICKETMASTER_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json'
 
 
-def fetch_ticketmaster_events():
-    params = {
-        'apikey': TICKETMASTER_API_KEY,
-        'city': 'Anchorage',
-        'countryCode': 'US'
-    }
-    response = requests.get(TICKETMASTER_API_URL, params=params)
-    return response.json()
-
-
-def fetch_ticketmaster_events(city):
+def fetch_ticketmaster_events(city, search_term=None):
     params = {
         'apikey': TICKETMASTER_API_KEY,
         'city': city,
         'countryCode': 'US'
     }
+    if search_term:
+        params['keyword'] = search_term
     response = requests.get(TICKETMASTER_API_URL, params=params)
     return response.json()
+
+
 
 def parse_event_data(events):
     if '_embedded' not in events or 'events' not in events['_embedded']:
@@ -45,6 +40,8 @@ def parse_event_data(events):
 
     parsed_events = []
     for event in events['_embedded']['events']:
+        venue_address = event['_embedded']['venues'][0]['address']['line1'] if '_embedded' in event and 'venues' in event['_embedded'] and 'address' in event['_embedded']['venues'][0] and 'line1' in event['_embedded']['venues'][0]['address'] else 'Unknown'
+
         parsed_event = {
             'id': event['id'],
             'name': event['name'],
@@ -58,11 +55,11 @@ def parse_event_data(events):
             'price_range': f"{event['priceRanges'][0]['min']} - {event['priceRanges'][0]['max']}" if 'priceRanges' in event else 'Unknown',
             'seatmap': event['seatmap']['staticUrl'] if 'seatmap' in event else 'None',
             'venue': event['_embedded']['venues'][0]['name'] if '_embedded' in event and 'venues' in event['_embedded'] else 'Unknown',
-            'venue_address': event['_embedded']['venues'][0]['address']['line1'] if '_embedded' in event and 'venues' in event['_embedded'] and 'address' in event['_embedded']['venues'][0] else 'Unknown',
+            'venue_address': venue_address,
             'city': event['_embedded']['venues'][0]['city']['name'] if '_embedded' in event and 'venues' in event['_embedded'] and 'city' in event['_embedded']['venues'][0] else 'Unknown',
             'state': event['_embedded']['venues'][0]['state']['stateCode'] if '_embedded' in event and 'venues' in event['_embedded'] and 'state' in event['_embedded']['venues'][0] else 'Unknown',
             'country': event['_embedded']['venues'][0]['country']['countryCode'] if '_embedded' in event and 'venues' in event['_embedded'] and 'country' in event['_embedded']['venues'][0] else 'Unknown',
-            'images' : [image['url'] for image in event['images']] if 'images' in event else []
+            'images': [image['url'] for image in event['images']] if 'images' in event else []
         }
         parsed_events.append(parsed_event)
     return parsed_events
@@ -73,13 +70,71 @@ def parse_event_data(events):
 @app.route('/api/events', methods=['GET'])
 def get_events():
     city = request.args.get('city', 'Anchorage')
-    events = fetch_ticketmaster_events(city)
+    search_term = request.args.get('search')
+    events = fetch_ticketmaster_events(city, search_term)
     parsed_events = parse_event_data(events)
     return jsonify({'events': parsed_events})
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_term = request.args.get('search', '').strip()
+    city = request.args.get('location', '').strip()
+
+    if not city:
+        # Handle case where location is not provided
+        return render_template('page-listing-v3.html', events=[], search_term=search_term, city=city)
+
+    events = fetch_ticketmaster_events(city)
+    parsed_events = parse_event_data(events)
+
+    if search_term:
+        filtered_events = [event for event in parsed_events if search_term.lower() in event['name'].lower() or search_term.lower() in event['genre'].lower()]
+    else:
+        filtered_events = parsed_events
+
+    return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city)
+
+
+
+
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    #Get the user's IP address
+    user_ip = request.remote_addr
+
+    #Get the user's location based on their IP address via geolocation API
+    user_locale = get_user_location(user_ip) or 'Anchorage'
+
+    #Fetch the events based on the user's location
+    featured_events = fetch_featured_events(user_locale)
+
+    return render_template('index.html', featured_events=featured_events)
+
+def get_user_location(ip_address):
+    try:
+        geolocator = Nominatim(user_agent="geoapiExercises")
+        location = geolocator.geocode(ip_address)
+        return location.city if location else None
+    except Exception as e:
+        print(f"Error getting user location: {e}")
+        return None
+
+
+def fetch_featured_events(locale):
+    #Fetch feature events based on the user's locale area
+    params = {
+        'apikey': TICKETMASTER_API_KEY,
+        'city': locale,
+        'countryCode': 'US',
+        'size': 12
+    }
+    response = requests.get(TICKETMASTER_API_URL, params=params)
+    events_data = response.json()
+    featured_events = parse_event_data(events_data)
+    return featured_events
+
 
 @app.route('/<path:filename>')
 def send_file(filename):
