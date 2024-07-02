@@ -92,7 +92,7 @@ def search():
     else:
         filtered_events = parsed_events
 
-    return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city)
+    return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city, event_count=len(filtered_events))
 
 
 
