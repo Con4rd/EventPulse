@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="59a02439-75fd-484b-ae2d-8372b1f7d919" name="Changes" comment="index with removed mobile" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Con4rd&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Con4rd/EventPulse.git&quot;,
+    &quot;accountId&quot;: &quot;cc5cc04f-c8d4-4ec8-8446-74d4bd5188ae&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2hyfo9MA8cbV8r7QhiozJTOBzrP" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.page-listing-v1.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.page-listing-v3.html.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Example.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Run Flask App.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TicketMasterParser.executor&quot;: &quot;Run&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/chris/OneDrive/Penn State/IST440W/EventPulse&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings sdk-home="$USER_HOME$/AppData/Local/Programs/Python/Python312/python.exe">
+        <option name="sdk">
+          <Sdk />
+        </option>
+        <option name="mySdkHome" value="$USER_HOME$/AppData/Local/Programs/Python/Python312/python.exe" />
+        <option name="mySdk">
+          <Sdk />
+        </option>
+      </console-settings>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="Run Flask App" type="PythonConfigurationType" factoryName="Python">
+      <module name="EventPulse" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (EventPulse)" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\chris\OneDrive\Penn State\IST440W\EventPulse" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="59a02439-75fd-484b-ae2d-8372b1f7d919" name="Changes" comment="" />
+      <created>1718571420550</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1718571420550</updated>
+      <workItem from="1718571421573" duration="307000" />
+      <workItem from="1718571839479" duration="66000" />
+      <workItem from="1718572017827" duration="7629000" />
+      <workItem from="1718581604495" duration="56000" />
+      <workItem from="1718581700150" duration="33000" />
+      <workItem from="1718581743201" duration="34000" />
+      <workItem from="1718582397931" duration="168000" />
+      <workItem from="1718586160374" duration="2309000" />
+      <workItem from="1718588620963" duration="3712000" />
+      <workItem from="1718928486203" duration="3080000" />
+      <workItem from="1719698513504" duration="50000" />
+      <workItem from="1719698583060" duration="74000" />
+      <workItem from="1719698703727" duration="739000" />
+      <workItem from="1719699843504" duration="621000" />
+      <workItem from="1719700482733" duration="95000" />
+      <workItem from="1719700584903" duration="9929000" />
+      <workItem from="1719711553179" duration="7820000" />
+      <workItem from="1719768912219" duration="30305000" />
+      <workItem from="1719805653816" duration="1212000" />
+    </task>
+    <task id="LOCAL-00001" summary="Working API w/ token generation">
+      <option name="closed" value="true" />
+      <created>1719707114018</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1719707114018</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Working Ticket Master API w/ proper fetch and parse event data and images">
+      <option name="closed" value="true" />
+      <created>1719713373420</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1719713373420</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Merged app and TicketMasterParser.py into one">
+      <option name="closed" value="true" />
+      <created>1719714582458</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1719714582458</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Updated and slimmed index">
+      <option name="closed" value="true" />
+      <created>1719719171207</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1719719171207</updated>
+    </task>
+    <task id="LOCAL-00005" summary="remove">
+      <option name="closed" value="true" />
+      <created>1719768955962</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1719768955962</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Updates for search and content panels for index features and, cards within page-listing-v3.html. Working but limited search function, will blanket search with location only. Added geolocation.js for feature cards on main index page.">
+      <option name="closed" value="true" />
+      <created>1719796990083</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1719796990083</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Small fixes to url redirects, on page-listing-v3.html and final touches before explaining implmentation">
+      <option name="closed" value="true" />
+      <created>1719799236691</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1719799236691</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Small fixes to url redirects, on page-listing-v3.html and final touches before explaining implmentation">
+      <option name="closed" value="true" />
+      <created>1719799250156</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1719799250156</updated>
+    </task>
+    <task id="LOCAL-00009" summary="index with removed mobile">
+      <option name="closed" value="true" />
+      <created>1719802593825</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1719802593825</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Working API w/ token generation" />
+    <MESSAGE value="Working Ticket Master API w/ proper fetch and parse event data and images" />
+    <MESSAGE value="Merged app and TicketMasterParser.py into one" />
+    <MESSAGE value="Updated and slimmed index" />
+    <MESSAGE value="remove" />
+    <MESSAGE value="Updates for search and content panels for index features and, cards within page-listing-v3.html. Working but limited search function, will blanket search with location only. Added geolocation.js for feature cards on main index page." />
+    <MESSAGE value="Small fixes to url redirects, on page-listing-v3.html and final touches before explaining implmentation" />
+    <MESSAGE value="index with removed mobile" />
+    <option name="LAST_COMMIT_MESSAGE" value="index with removed mobile" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/EventPulse$Run_Flask_App.coverage" NAME="Run Flask App Coverage Results" MODIFIED="1719769075114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\chris\OneDrive\Penn State\IST440W\EventPulse" />
+    <SUITE FILE_PATH="coverage/EventPulse$Example.coverage" NAME="Example Coverage Results" MODIFIED="1719709606631" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/EventPulse$TicketMasterParser.coverage" NAME="TicketMasterParser Coverage Results" MODIFIED="1719712963615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/EventPulse$app.coverage" NAME="app Coverage Results" MODIFIED="1719802685799" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
