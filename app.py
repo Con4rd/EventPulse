@@ -1,82 +1,106 @@
-from flask import Flask, render_template, send_from_directory, jsonify, request
+from flask import Flask, render_template, send_from_directory, jsonify, request, json
 import requests
 import secrets
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderServiceError
-
-# In this example, we have a Flask application that serves static HTML files from the HTML_Files directory in the project.
-# The HTML files are stored in the HTML_Files directory, and the Flask application is configured to serve these files using the send_from_directory function.
-# The index route returns the index.html file, and the send_file route serves any static file from the HTML_Files directory based on the filename provided in the URL.
-# This allows us to create a simple Flask application that serves static HTML files without the need to create routes for each individual file.
-# To run the application, we can execute the app.py file and access the index.html file in the browser:
-# $ python app.py
-# The application will be running on a development server, and we can access the index.html file by visiting http:// http://127.0.0.1:5000/ in the browser.
-
+from event_aggregator import aggregate_events, fetch_ticketmaster_events, fetch_yelp_events
+from difflib import SequenceMatcher
+from datetime import datetime, timedelta
+import pytz
+import random
 
 app = Flask(__name__, static_folder='HTML_Files', template_folder='HTML_Files')
-app.secret_key = secrets.token_hex(32)  # Random secret key for session management
+app.secret_key = secrets.token_hex(32)
 
-
-# Configuration for TicketMaster API
+# Configuration for APIs
 TICKETMASTER_API_KEY = 'qDV0IOLql9ch2aHpyV5ThqHeXjG5Glcg'
-TICKETMASTER_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json'
+YELP_API_KEY = 'QMNqEjuHC8KV88qoIn8iPAa-ByvTljO7eCIzLK5Fka_eqHHJK_hi7mfOHj-95t8KWvucWoEh1OIF9PgePSIMW_rf1eWzOvCrgvV4ooOPopxqA-NKZYXIPYmWzDGTZnYx'
 
+# Category synonyms
+category_synonyms = {
+    'music': ['concert', 'gig', 'live performance', 'recital', 'show', 'band', 'orchestra', 'dj set', 'album release', 'tour', 'musical', 'opera', 'symphony', 'jazz', 'rock', 'hip-hop', 'pop', 'classical', 'electronic', 'acoustic'],
+    'sports': ['game', 'match', 'tournament', 'championship', 'league', 'competition', 'athletics', 'olympic', 'football', 'soccer', 'american football', 'basketball', 'baseball', 'tennis', 'golf', 'hockey', 'rugby', 'cricket', 'volleyball', 'swimming', 'track and field'],
+    'theatre': ['play', 'drama', 'performance', 'stage production', 'broadway', 'off-broadway', 'musical theatre', 'pantomime', 'improv', 'monologue', 'one-man show', 'theatrical', 'act', 'repertory', 'fringe'],
+    'festivals': ['fair', 'carnival', 'celebration', 'gala', 'fiesta', 'fête', 'jamboree', 'extravaganza', 'parade', 'exhibition', 'expo', 'music festival', 'film festival', 'food festival', 'art festival', 'cultural festival'],
+    'comedy': ['stand-up', 'sketch comedy', 'improv comedy', 'sitcom', 'satire', 'parody', 'roast', 'open mic', 'comedy club', 'humor', 'laugh', 'joke', 'comic', 'comedian', 'funny'],
+    'workshops and classes': ['seminar', 'lecture', 'training', 'course', 'masterclass', 'tutorial', 'symposium', 'conference', 'webinar', 'bootcamp', 'lessons', 'education', 'learning', 'skill-building', 'hands-on', 'interactive session', 'crash course', 'intensive', 'professional development', 'continuing education']
+}
 
-def fetch_ticketmaster_events(city, search_term=None):
-    params = {
-        'apikey': TICKETMASTER_API_KEY,
-        'city': city,
-        'countryCode': 'US',
-        'keyword': search_term
-    }
-    response = requests.get(TICKETMASTER_API_URL, params=params)
-    print(f"API Response: {response.json()}")  # Debugging statement
-    return response.json()
+def expand_search_terms(search_term):
+    expanded_terms = [search_term]
+    for category, synonyms in category_synonyms.items():
+        if search_term.lower() in synonyms or search_term.lower() == category:
+            expanded_terms.extend(synonyms)
+            expanded_terms.append(category)
+    return list(set(expanded_terms))  # Remove duplicates
 
+def log_event(event):
+    """Print detailed event information"""
+    print(f"Event ID: {event.id}")
+    print(f"Name: {event.name}")
+    print(f"Description: {event.description[:100]}...")  # First 100 characters
+    print(f"Start Time: {event.start_time}")
+    print(f"End Time: {event.end_time}")
+    print(f"Venue: {event.venue}")
+    print(f"Category: {event.category}")
+    print(f"Price: {event.price}")
+    print(f"Image URL: {event.image_url}")
+    print(f"Ticket URL: {event.ticket_url}")
+    print(f"Attending Count: {event.attending_count}")
+    print(f"Interested Count: {event.interested_count}")
+    print(f"Source: {', '.join(event.source)}")
+    print("-" * 50)
 
-
-def parse_event_data(events):
-    if '_embedded' not in events or 'events' not in events['_embedded']:
-        return []
-
-    parsed_events = []
-    for event in events['_embedded']['events']:
-        venue_address = event['_embedded']['venues'][0]['address']['line1'] if '_embedded' in event and 'venues' in event['_embedded'] and 'address' in event['_embedded']['venues'][0] and 'line1' in event['_embedded']['venues'][0]['address'] else 'Unknown'
-
-        start_time = event['dates']['start']['dateTime'] if 'dates' in event and 'start' in event['dates'] and 'dateTime' in event['dates']['start'] else 'Unknown'
-
-        parsed_event = {
-            'id': event['id'],
-            'name': event['name'],
-            'url': event['url'],
-            'start_time': start_time,
-            'status': event['dates']['status']['code'] if 'dates' in event and 'status' in event['dates'] else 'Unknown',
-            'type': event['type'],
-            'genre': event['classifications'][0]['genre']['name'] if 'classifications' in event and event['classifications'] else 'Unknown',
-            'subgenre': event['classifications'][0]['subGenre']['name'] if 'classifications' in event and event['classifications'] else 'Unknown',
-            'promoter': event['promoter']['name'] if 'promoter' in event else 'Unknown',
-            'price_range': f"{event['priceRanges'][0]['min']} - {event['priceRanges'][0]['max']}" if 'priceRanges' in event else 'Unknown',
-            'seatmap': event['seatmap']['staticUrl'] if 'seatmap' in event else 'None',
-            'venue': event['_embedded']['venues'][0]['name'] if '_embedded' in event and 'venues' in event['_embedded'] else 'Unknown',
-            'venue_address': venue_address,
-            'city': event['_embedded']['venues'][0]['city']['name'] if '_embedded' in event and 'venues' in event['_embedded'] and 'city' in event['_embedded']['venues'][0] else 'Unknown',
-            'state': event['_embedded']['venues'][0]['state']['stateCode'] if '_embedded' in event and 'venues' in event['_embedded'] and 'state' in event['_embedded']['venues'][0] else 'Unknown',
-            'country': event['_embedded']['venues'][0]['country']['countryCode'] if '_embedded' in event and 'venues' in event['_embedded'] and 'country' in event['_embedded']['venues'][0] else 'Unknown',
-            'images': [image['url'] for image in event['images']] if 'images' in event else []
-        }
-        parsed_events.append(parsed_event)
-    return parsed_events
-
-
-
-#Fecthing the events from TicketMaster API with dynamic city
 @app.route('/api/events', methods=['GET'])
 def get_events():
     city = request.args.get('city', 'Anchorage')
-    search_term = request.args.get('search')
-    events = fetch_ticketmaster_events(city, search_term)
-    parsed_events = parse_event_data(events)
-    return jsonify({'events': parsed_events})
+    search_term = request.args.get('search', '').lower()
+
+    tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, city)
+    yelp_events = fetch_yelp_events(YELP_API_KEY, city)
+
+    aggregated_events = aggregate_events(tm_events, yelp_events)
+
+    expanded_search_terms = expand_search_terms(search_term)
+
+    if search_term:
+        filtered_events = []
+        for event in aggregated_events:
+            score = calculate_relevance_score(event, expanded_search_terms)
+            if score > 0:
+                filtered_events.append((event, score))
+
+        # Sort events by relevance score in descending order
+        filtered_events.sort(key=lambda x: x[1], reverse=True)
+        filtered_events = [event for event, score in filtered_events]
+    else:
+        filtered_events = aggregated_events
+
+    # Log all events
+    print(f"Total events: {len(filtered_events)}")
+    for event in filtered_events:
+        log_event(event)
+
+    events_data = [
+        {
+            'id': event.id,
+            'name': event.name,
+            'description': event.description,
+            'start_time': event.start_time,
+            'end_time': event.end_time,
+            'venue': event.venue,
+            'category': event.category,
+            'price': event.price,
+            'image_url': event.image_url,
+            'ticket_url': event.ticket_url,
+            'attending_count': event.attending_count,
+            'interested_count': event.interested_count,
+            'source': event.source
+        }
+        for event in filtered_events
+    ]
+
+    return jsonify({'events': events_data})
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -84,23 +108,37 @@ def search():
     city = request.args.get('location', '').strip()
 
     if not city:
-        # Handle case where location is not provided
         return render_template('page-listing-v3.html', events=[], search_term=search_term, city=city)
 
-    events = fetch_ticketmaster_events(city, search_term)
-    parsed_events = parse_event_data(events)
+    # Attempt to get state and country information
+    user_locale = get_user_location(request.remote_addr)
+    if user_locale:
+        city, state, country = user_locale
+        location = f"{city}, {state}, {country}"
+    else:
+        location = city
+
+    tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, location)
+    yelp_events = fetch_yelp_events(YELP_API_KEY, location)
+
+    aggregated_events = aggregate_events(tm_events, yelp_events)
+
+    expanded_search_terms = expand_search_terms(search_term.lower())
 
     if search_term:
-        filtered_events = [event for event in parsed_events if
-                           search_term.lower() in event['name'].lower() or
-                           search_term.lower() in event['genre'].lower() or
-                           search_term.lower() in event['subgenre'].lower() or
-                           search_term.lower() in event['type'].lower()]
+        filtered_events = []
+        for event in aggregated_events:
+            score = calculate_relevance_score(event, expanded_search_terms)
+            if score > 0:
+                filtered_events.append((event, score))
+
+        # Sort events by relevance score in descending order
+        filtered_events.sort(key=lambda x: x[1], reverse=True)
+        filtered_events = [event for event, score in filtered_events]
     else:
-        filtered_events = parsed_events
+        filtered_events = aggregated_events
 
     return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city, event_count=len(filtered_events))
-
 
 @app.route('/location', methods=['POST'])
 def handle_location():
@@ -108,23 +146,24 @@ def handle_location():
     latitude = data['latitude']
     longitude = data['longitude']
 
-    # Process the location data as needed
-    # You can store it in a database, perform reverse geocoding, etc.
-
     response = {'message': 'Location received successfully'}
     return jsonify(response)
 
 @app.route('/')
 def index():
-    #Get the user's IP address
     user_ip = request.remote_addr
+    print(f"User IP: {user_ip}")
+    user_locale = get_user_location(user_ip)
+    print(f"User locale: {user_locale}")
 
-    #Get the user's location based on their IP address via geolocation API
-    user_locale = get_user_location(user_ip) or 'Anchorage'
+    if user_locale:
+        city, state, country = user_locale
+        featured_events = fetch_featured_events(city, state, country)
+    else:
+        print("Using default location: Anchorage, AK, USA")
+        featured_events = fetch_featured_events("Anchorage", "AK", "USA")
 
-    #Fetch the events based on the user's location
-    featured_events = fetch_featured_events(user_locale)
-
+    print(f"Number of featured events: {len(featured_events)}")
     return render_template('index.html', featured_events=featured_events)
 
 
@@ -132,29 +171,149 @@ def index():
 
 def get_user_location(ip_address):
     try:
-        geolocator = Nominatim(user_agent="geoapiExercises")
-        location = geolocator.geocode(ip_address)
-        return location.city if location else None
+        geolocator = Nominatim(user_agent="EventPulseApp")
+        location = geolocator.geocode(ip_address, language="en")
+        if location:
+            address = location.raw['address']
+            city = address.get('city') or address.get('town') or address.get('village')
+            state = address.get('state')
+            country = address.get('country')
+            return city, state, country
+        return None
     except GeocoderServiceError as e:
         print(f"Error getting user location: {e}")
         return None
     except Exception as e:
         print(f"Error getting user location: {e}")
+        if '418' in str(e):
+            print("Received 418 status code. This might be due to rate limiting or IP restrictions.")
         return None
 
 
-def fetch_featured_events(locale):
-    #Fetch feature events based on the user's locale area
-    params = {
-        'apikey': TICKETMASTER_API_KEY,
-        'city': locale,
-        'countryCode': 'US',
-        'size': 12
-    }
-    response = requests.get(TICKETMASTER_API_URL, params=params)
-    events_data = response.json()
-    featured_events = parse_event_data(events_data)
+
+
+def fetch_featured_events(city, state, country):
+    location = f"{city}, {state}, {country}"
+    print(f"Fetching featured events for location: {location}")
+
+    tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, location)
+    yelp_events = fetch_yelp_events(YELP_API_KEY, location)
+
+    print(f"Raw Ticketmaster events: {len(tm_events)}")
+    print(f"Raw Yelp events: {len(yelp_events)}")
+
+    # Process Ticketmaster events
+    filtered_tm_events = []
+    for event in tm_events:
+        if isinstance(event, dict):
+            filtered_tm_events.append({
+                'id': event.get('id'),
+                'name': event.get('name'),
+                'description': event.get('description'),
+                'start_time': event.get('dates', {}).get('start', {}).get('dateTime'),
+                'end_time': event.get('dates', {}).get('end', {}).get('dateTime'),
+                'venue': event.get('_embedded', {}).get('venues', [{}])[0],
+                'category': event.get('classifications', [{}])[0].get('segment', {}).get('name'),
+                'price': event.get('priceRanges', [{}])[0] if event.get('priceRanges') else {},
+                'image_url': event.get('images', [{}])[0].get('url') if event.get('images') else None,
+                'ticket_url': event.get('url'),
+                'source': 'Ticketmaster'
+            })
+
+    # Process Yelp events
+    filtered_yelp_events = []
+    for event in yelp_events:
+        if isinstance(event, dict):
+            filtered_yelp_events.append({
+                'id': event.get('id'),
+                'name': event.get('name'),
+                'description': event.get('description'),
+                'start_time': event.get('time_start'),
+                'end_time': event.get('time_end'),
+                'venue': event.get('location', {}),
+                'category': event.get('category'),
+                'price': {'min': event.get('cost'), 'max': event.get('cost_max')},
+                'image_url': event.get('image_url'),
+                'ticket_url': event.get('event_site_url'),
+                'source': 'Yelp'
+            })
+
+    print(f"Filtered Ticketmaster events: {len(filtered_tm_events)}")
+    print(f"Filtered Yelp events: {len(filtered_yelp_events)}")
+
+    # Combine and shuffle the events
+    all_events = filtered_tm_events + filtered_yelp_events
+    random.shuffle(all_events)
+
+    # Select up to 12 events
+    featured_events = all_events[:12]
+
+    print(f"Total featured events: {len(featured_events)}")
+
     return featured_events
+
+@app.route('/all_events', methods=['GET'])
+def all_events():
+    """Display all event data in the browser"""
+    city = request.args.get('city', 'Anchorage')
+
+    tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, city)
+    yelp_events = fetch_yelp_events(YELP_API_KEY, city)
+
+    aggregated_events = aggregate_events(tm_events, yelp_events)
+
+    events_data = [
+        {
+            'id': event.id,
+            'name': event.name,
+            'description': event.description,
+            'start_time': event.start_time,
+            'end_time': event.end_time,
+            'venue': event.venue,
+            'category': event.category,
+            'price': event.price,
+            'image_url': event.image_url,
+            'ticket_url': event.ticket_url,
+            'attending_count': event.attending_count,
+            'interested_count': event.interested_count,
+            'source': event.source
+        }
+        for event in aggregated_events
+    ]
+
+    return f"<pre>{json.dumps(events_data, indent=2)}</pre>"
+
+
+def calculate_relevance_score(event, search_terms):
+    score = 0
+    searchable_fields = [
+        event.name.lower(),
+        event.description.lower(),
+        event.category.lower(),
+    ]
+
+    for term in search_terms:
+        term_score = 0
+        for field in searchable_fields:
+            if term in field:
+                term_score += 1
+            # Add extra score for exact matches
+            if term == field:
+                term_score += 2
+            # Add partial matching score
+            term_score += SequenceMatcher(None, term, field).ratio()
+
+        # Only add to the total score if this term contributed something
+        if term_score > 0:
+            score += term_score
+
+    # Set a minimum threshold for relevance
+    min_threshold = 0.5 * len(search_terms)
+
+    return score if score > min_threshold else 0
+
+
+
 
 
 @app.route('/<path:filename>')
@@ -162,7 +321,6 @@ def send_file(filename):
     return send_from_directory(app.static_folder, filename)
 
 if __name__ == '__main__':
-    print("Visit http://localhost:5000/api/events to view the events")
+    print("Visit http://localhost:5000/api/events to view the aggregated events")
+    print("Visit http://localhost:5000/all_events to see all event data in the browser")
     app.run(debug=True)
-
-

@@ -591,6 +591,23 @@
 						<p>Discover some of the most popular listings in your city.</p>
 					</div>
 				</div>
+				<!-- Start of debug code -->
+				<div class="col-lg-12 mb-5">
+					<h2>Featured Events Debug:</h2>
+					<pre>{{ featured_events|tojson }}</pre>
+
+					{% if featured_events %}
+					<p>Number of featured events: {{ featured_events|length }}</p>
+					{% else %}
+					<p>No featured events available.</p>
+					{% endif %}
+
+					<h3>Event Names:</h3>
+					{% for event in featured_events %}
+					<div>{{ event.name }}</div>
+					{% endfor %}
+				</div>
+				<!-- End of debug code -->
 				<div class="col-lg-12">
 					<div class="col-lg-12">
 						<div class="popular_listing_slider1">
@@ -598,45 +615,47 @@
 							<div class="item">
 								<div class="feat_property">
 									<div class="thumb">
-										<a href="{{ event.url }}">
-											{% if event.images %}
-											<img class="img-whp" src="{{ event.images[0] }}" alt="{{ event.name }}">
-											{% else %}
-											<img class="img-whp" src="images/property/fp1.jpg" alt="fp1.jpg">
+										{% if event.image_url %}
+										<img src="{{ event.image_url }}" alt="{{ event.name }}">
+										{% else %}
+										<img src="images/property/fp1.jpg" alt="default image">
+										{% endif %}
+										<div class="thmb_cntnt">
+											{% if event.price %}
+											{% if event.price.min is defined %}
+											<ul class="tag mb0">
+												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.price.min }} - {{ event.price.max }}</a></li>
+											</ul>
+											{% elif event.price.get('min') is defined %}
+											<ul class="tag mb0">
+												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.price.get('min') }} - {{ event.price.get('max') }}</a></li>
+											</ul>
 											{% endif %}
-											<div class="thmb_cntnt">
-												<ul class="tag mb0">
-													{% if event.price_range != "Unknown" %}
-													<li class="list-inline-item"><a href="{{ event.url }}" style="font-size: 0.65em;">${{ event.price_range }}</a></li>
-													{% endif %}
-													<li class="list-inline-item"><a href="{{ event.url }}" style="text-transform: uppercase;">{{ event.status }}</a></li>
-												</ul>
-												<ul class="tag2 mb0">
-													<li class="list-inline-item"><a href="{{ event.url }}">Featured</a></li>
-												</ul>
-											</div>
-										</a>
+											{% endif %}
+											<ul class="tag2 mb0">
+												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.source }}</a></li>
+											</ul>
+											<a class="fp_price" href="{{ event.ticket_url }}">Featured</a>
+										</div>
 									</div>
 									<div class="details">
-										<a href="{{ event.url }}">
-											<div class="tc_content">
-												<div class="badge_icon"><img src="images/icons/agent1.svg" alt="agent1.svg"></div>
-												<h4>{{ event.name }}</h4>
-												<p>{{ event.venue }}</p>
-												<ul class="prop_details mb0">
-													<li class="list-inline-item"><img src="images/icons/address.ico" alt="address.ico" style="width: 8%; height: auto;">{{ event.venue_address }}</li>
-													<li class="list-inline-item"><img src="images/icons/location.ico" alt="location.ico" style="width: 8%; height: auto;">{{ event.city }}</li>
-												</ul>
-											</div>
-										</a>
+										<div class="tc_content">
+											<h4><a href="{{ event.ticket_url }}">{{ event.name }}</a></h4>
+											{% if event.venue %}
+											<p>{{ event.venue.get('name', '') }}</p>
+											<ul class="prop_details mb0">
+												<li><a href="#">{{ event.venue.get('address', {}).get('line1', '') }}</a></li>
+												<li><a href="#">{{ event.venue.get('city', '') }}, {{ event.venue.get('state', '') }}</a></li>
+											</ul>
+											{% endif %}
+										</div>
 										<div class="fp_footer">
 											<ul class="fp_meta float-left mb0">
-												<li class="list-inline-item"><a href="{{ event.url }}"><img src="images/icons/icon3.svg" alt="icon3.svg"></a></li>
-												<li class="list-inline-item"><a href="{{ event.url }}">{{ event.genre }}</a></li>
+												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.category }}</a></li>
 											</ul>
 											<ul class="fp_meta float-right mb0">
-												<li class="list-inline-item"><a href="{{ event.url }}"><span class="flaticon-zoom"></span></a></li>
-												<li class="list-inline-item"><a class="icon" href="{{ event.url }}"><span class="flaticon-love"></span></a></li>
+												<li class="list-inline-item"><a class="icon" href="{{ event.ticket_url }}"><span class="flaticon-zoom"></span></a></li>
+												<li class="list-inline-item"><a class="icon" href="{{ event.ticket_url }}"><span class="flaticon-love"></span></a></li>
 											</ul>
 										</div>
 									</div>
