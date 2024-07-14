@@ -241,13 +241,24 @@ def fetch_featured_events(city, state, country):
     print(f"Filtered Ticketmaster events: {len(filtered_tm_events)}")
     print(f"Filtered Yelp events: {len(filtered_yelp_events)}")
 
+    # Ensure equal representation
+    max_events_per_source = 10  # Adjust this number as needed
+    tm_events_sample = random.sample(filtered_tm_events, min(max_events_per_source, len(filtered_tm_events)))
+    yelp_events_sample = random.sample(filtered_yelp_events, min(max_events_per_source, len(filtered_yelp_events)))
+
     # Combine and shuffle the events
-    all_events = filtered_tm_events + filtered_yelp_events
+    all_events = tm_events_sample + yelp_events_sample
     random.shuffle(all_events)
+
+
 
     # Select up to 12 events
     featured_events = all_events[:12]
 
+    print(f"Fetched featured events for {location}")
+    print(f"Ticketmaster events: {len(tm_events_sample)}")
+    print(f"Yelp events: {len(yelp_events_sample)}")
+    print(f"Sample events: {len(featured_events) - len(tm_events_sample) - len(yelp_events_sample)}")
     print(f"Total featured events: {len(featured_events)}")
 
     return featured_events
@@ -287,9 +298,9 @@ def all_events():
 def calculate_relevance_score(event, search_terms):
     score = 0
     searchable_fields = [
-        event.name.lower(),
-        event.description.lower(),
-        event.category.lower(),
+        event.get('name', '').lower(),
+        event.get('description', '').lower(),
+        event.get('category', '').lower(),
     ]
 
     for term in search_terms:

@@ -139,7 +139,7 @@ def aggregate_events(tm_events, yelp_events):
             'end_time': event.get('dates', {}).get('end', {}).get('dateTime'),
             'venue': event.get('_embedded', {}).get('venues', [{}])[0],
             'category': event.get('classifications', [{}])[0].get('segment', {}).get('name'),
-            'price': event.get('priceRanges', [{}])[0],
+            'price': {'min': event.get('priceRanges', [{}])[0].get('min'), 'max': event.get('priceRanges', [{}])[0].get('max')} if event.get('priceRanges') else {},
             'image_url': event.get('images', [{}])[0].get('url'),
             'ticket_url': event.get('url'),
             'source': ['Ticketmaster']
