@@ -2,6 +2,7 @@ from flask import Flask, render_template, send_from_directory, jsonify, request
 import requests
 import secrets
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderServiceError
 
 # In this example, we have a Flask application that serves static HTML files from the HTML_Files directory in the project.
 # The HTML files are stored in the HTML_Files directory, and the Flask application is configured to serve these files using the send_from_directory function.
@@ -25,11 +26,11 @@ def fetch_ticketmaster_events(city, search_term=None):
     params = {
         'apikey': TICKETMASTER_API_KEY,
         'city': city,
-        'countryCode': 'US'
+        'countryCode': 'US',
+        'keyword': search_term
     }
-    if search_term:
-        params['keyword'] = search_term
     response = requests.get(TICKETMASTER_API_URL, params=params)
+    print(f"API Response: {response.json()}")  # Debugging statement
     return response.json()
 
 
@@ -42,12 +43,14 @@ def parse_event_data(events):
     for event in events['_embedded']['events']:
         venue_address = event['_embedded']['venues'][0]['address']['line1'] if '_embedded' in event and 'venues' in event['_embedded'] and 'address' in event['_embedded']['venues'][0] and 'line1' in event['_embedded']['venues'][0]['address'] else 'Unknown'
 
+        start_time = event['dates']['start']['dateTime'] if 'dates' in event and 'start' in event['dates'] and 'dateTime' in event['dates']['start'] else 'Unknown'
+
         parsed_event = {
             'id': event['id'],
             'name': event['name'],
             'url': event['url'],
-            'start_time': event['dates']['start']['dateTime'],
-            'status': event['dates']['status']['code'],
+            'start_time': start_time,
+            'status': event['dates']['status']['code'] if 'dates' in event and 'status' in event['dates'] else 'Unknown',
             'type': event['type'],
             'genre': event['classifications'][0]['genre']['name'] if 'classifications' in event and event['classifications'] else 'Unknown',
             'subgenre': event['classifications'][0]['subGenre']['name'] if 'classifications' in event and event['classifications'] else 'Unknown',
@@ -84,20 +87,32 @@ def search():
         # Handle case where location is not provided
         return render_template('page-listing-v3.html', events=[], search_term=search_term, city=city)
 
-    events = fetch_ticketmaster_events(city)
+    events = fetch_ticketmaster_events(city, search_term)
     parsed_events = parse_event_data(events)
 
     if search_term:
-        filtered_events = [event for event in parsed_events if search_term.lower() in event['name'].lower() or search_term.lower() in event['genre'].lower()]
+        filtered_events = [event for event in parsed_events if
+                           search_term.lower() in event['name'].lower() or
+                           search_term.lower() in event['genre'].lower() or
+                           search_term.lower() in event['subgenre'].lower() or
+                           search_term.lower() in event['type'].lower()]
     else:
         filtered_events = parsed_events
 
     return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city, event_count=len(filtered_events))
 
 
+@app.route('/location', methods=['POST'])
+def handle_location():
+    data = request.get_json()
+    latitude = data['latitude']
+    longitude = data['longitude']
 
+    # Process the location data as needed
+    # You can store it in a database, perform reverse geocoding, etc.
 
-
+    response = {'message': 'Location received successfully'}
+    return jsonify(response)
 
 @app.route('/')
 def index():
@@ -112,11 +127,17 @@ def index():
 
     return render_template('index.html', featured_events=featured_events)
 
+
+
+
 def get_user_location(ip_address):
     try:
         geolocator = Nominatim(user_agent="geoapiExercises")
         location = geolocator.geocode(ip_address)
         return location.city if location else None
+    except GeocoderServiceError as e:
+        print(f"Error getting user location: {e}")
+        return None
     except Exception as e:
         print(f"Error getting user location: {e}")
         return None

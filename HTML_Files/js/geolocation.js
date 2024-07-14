@@ -29,7 +29,24 @@ function sendLocationToServer(position) {
 }
 
 function handleLocationError(error) {
-    console.error('Error Code = ' + error.code + ' - ' + error.message);
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            console.error("User denied the request for geolocation.");
+            // Display a message to the user indicating that location access was denied
+            break;
+        case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            // Display a message to the user indicating that location information is unavailable
+            break;
+        case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            // Display a message to the user indicating that the location request timed out
+            break;
+        case error.UNKNOWN_ERROR:
+            console.error("An unknown error occurred.");
+            // Display a generic error message to the user
+            break;
+    }
 }
 
 // Call the function to get the user's location when the page loads
