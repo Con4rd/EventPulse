@@ -1,6 +1,8 @@
 import requests
 from datetime import datetime
-import json
+
+from flask import jsonify
+
 
 class UnifiedEvent:
     def __init__(self):
@@ -97,74 +99,10 @@ class UnifiedEvent:
         # Merge sources
         self.source = list(set(self.source + other_event.source))
 
-def fetch_ticketmaster_events(api_key, location):
-    city = location.split(", ")[0]  # Just use the city name
-    url = f"https://app.ticketmaster.com/discovery/v2/events.json?apikey={api_key}&city={city}"
-
-    print(f"Ticketmaster API URL: {url}")  # Add this line for debugging
-
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        events = data.get('_embedded', {}).get('events', [])
-        print(f"Ticketmaster API returned {len(events)} events")  # Add this line
-        return events
-    else:
-        print(f"Error fetching Ticketmaster data: {response.status_code}")
-        print(f"Response content: {response.text}")  # Add this line
-        return []
-
-def fetch_yelp_events(api_key, location):
-    headers = {'Authorization': f'Bearer {api_key}'}
-    url = "https://api.yelp.com/v3/events"
-    now = int(datetime.now().timestamp())  # Convert to Unix timestamp
-    params = {'location': location, 'limit': 50, 'start_date': now}
-    response = requests.get(url, headers=headers, params=params)
-    if response.status_code == 200:
-        return response.json().get('events', [])
-    else:
-        print(f"Error fetching Yelp data: {response.status_code}")
-        print(f"Response content: {response.text}")  # Add this line
-        return []
-
-def aggregate_events(tm_events, yelp_events):
-    aggregated = []
-
-    for event in tm_events:
-        aggregated.append({
-            'id': event.get('id'),
-            'name': event.get('name'),
-            'description': event.get('description'),
-            'start_time': event.get('dates', {}).get('start', {}).get('dateTime'),
-            'end_time': event.get('dates', {}).get('end', {}).get('dateTime'),
-            'venue': event.get('_embedded', {}).get('venues', [{}])[0],
-            'category': event.get('classifications', [{}])[0].get('segment', {}).get('name'),
-            'price': {'min': event.get('priceRanges', [{}])[0].get('min'), 'max': event.get('priceRanges', [{}])[0].get('max')} if event.get('priceRanges') else {},
-            'image_url': event.get('images', [{}])[0].get('url'),
-            'ticket_url': event.get('url'),
-            'source': ['Ticketmaster']
-        })
-
-    for event in yelp_events:
-        aggregated.append({
-            'id': event.get('id'),
-            'name': event.get('name'),
-            'description': event.get('description'),
-            'start_time': event.get('time_start'),
-            'end_time': event.get('time_end'),
-            'venue': event.get('location', {}),
-            'category': event.get('category'),
-            'price': {'min': event.get('cost'), 'max': event.get('cost_max')},
-            'image_url': event.get('image_url'),
-            'ticket_url': event.get('event_site_url'),
-            'source': ['Yelp']
-        })
-
-    return aggregated
 
 def main():
-    tm_api_key = 'your_ticketmaster_api_key'
-    yelp_api_key = 'your_yelp_api_key'
+    tm_api_key = 'qDV0IOLql9ch2aHpyV5ThqHeXjG5Glcg'
+    yelp_api_key = 'QMNqEjuHC8KV88qoIn8iPAa-ByvTljO7eCIzLK5Fka_eqHHJK_hi7mfOHj-95t8KWvucWoEh1OIF9PgePSIMW_rf1eWzOvCrgvV4ooOPopxqA-NKZYXIPYmWzDGTZnYx'
     city = 'New York'
 
     tm_events = fetch_ticketmaster_events(tm_api_key, city)
@@ -181,6 +119,95 @@ def main():
         print("---")
 
     print(f"Total events aggregated: {len(aggregated_events)}")
+
+
+def fetch_ticketmaster_events(TICKETMASTER_API_KEY, location):
+    city = location.split(", ")[0]  # Just use the city name
+    url = f"https://app.ticketmaster.com/discovery/v2/events.json?apikey={TICKETMASTER_API_KEY}&city={city}&size=200"
+
+    print(f"Ticketmaster API URL: {url}")  # Add this line for debugging
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        events = data.get('_embedded', {}).get('events', [])
+        print(f"Ticketmaster API returned {len(events)} events")  # Add this line
+        return events
+    else:
+        print(f"Error fetching Ticketmaster data: {response.status_code}")
+        print(f"Response content: {response.text}")  # Add this line
+        return []
+
+def fetch_yelp_events(YELP_API_KEY, location):
+    headers = {'Authorization': f'Bearer {YELP_API_KEY}'}
+    url = "https://api.yelp.com/v3/events"
+    now = int(datetime.now().timestamp())  # Convert to Unix timestamp
+    params = {'location': location, 'limit': 200, 'start_date': now}
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        events = response.json().get('events', [])
+        print(f"Yelp API returned {len(events)} events")  # Add this line
+        #print results entry if required
+        return events
+    else:
+        print(f"Error fetching Yelp data: {response.status_code}")
+        print(f"Response content: {response.text}")  # Add this line
+        return []
+
+def aggregate_events(tm_events, yelp_events):
+    aggregated = []
+
+    for event in tm_events:
+        venue = event.get('_embedded', {}).get('venues', [{}])[0]
+        city = venue.get('city', {}).get('name', '')
+        state_code = venue.get('state', {}).get('stateCode', '')
+        state = venue.get('state', {}).get('name', '')
+
+        category = event.get('classifications', [{}])[0].get('segment', {}).get('name', '').title()
+
+        aggregated.append({
+            'id': event.get('id'),
+            'name': event.get('name'),
+            'description': event.get('description'),
+            'start_time': event.get('dates', {}).get('start', {}).get('dateTime'),
+            'end_time': event.get('dates', {}).get('end', {}).get('dateTime'),
+            'venue': {
+                'name': venue.get('name', ''),
+                'city': city,
+                'state': state,
+                'address': venue.get('address', {}).get('line1', ''),
+            },
+            'category': category,
+            'price': {'min': event.get('priceRanges', [{}])[0].get('min'), 'max': event.get('priceRanges', [{}])[0].get('max')} if event.get('priceRanges') else {},
+            'image_url': event.get('images', [{}])[0].get('url'),
+            'ticket_url': event.get('url'),
+            'source': ['Ticketmaster']
+        })
+
+    for event in yelp_events:
+        category = event.get('category', '').title()
+
+        aggregated.append({
+            'id': event.get('id'),
+            'name': event.get('name'),
+            'description': event.get('description'),
+            'start_time': event.get('time_start'),
+            'end_time': event.get('time_end'),
+            'venue': event.get('location', {}),
+            'category': category,
+            'price': {'min': event.get('cost'), 'max': event.get('cost_max')},
+            'image_url': event.get('image_url'),
+            'ticket_url': event.get('event_site_url'),
+            'source': ['Yelp']
+        })
+
+    return aggregated
+
+
+
+
 
 if __name__ == "__main__":
     main()

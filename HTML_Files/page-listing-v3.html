@@ -812,30 +812,22 @@
 									{% endif %}
 									<div class="thmb_cntnt">
 										<ul class="tag mb0">
-											<li class="list-inline-item"><a href="#">{{ event.price.min }} - {{ event.price.max }}</a></li>
-											<li class="list-inline-item"><a href="#">{{ ', '.join(event.source) }}</a></li>
+											<li class="list-inline-item"><a href="#">{{ event.category }}</a></li>
 										</ul>
-										<a class="fp_price" href="#">Featured</a>
+										<ul class="icon mb0">
+											<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.price.min }} - {{ event.price.max }}</a></li>
+											<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ ', '.join(event.source) }}</a></li>
+										</ul>
 									</div>
 								</div>
 								<div class="details">
 									<div class="tc_content">
 										<h4><a href="{{ event.ticket_url }}">{{ event.name }}</a></h4>
+										<p>{{ event.description }}</p>
 										<p>{{ event.venue.name }}</p>
-										<ul class="prop_details mb0">
-											<li><img src="images/icons/address.ico" style="width: 8%; height: auto;">{{ event.venue.address }}</li>
-											<li><img src="images/icons/location.ico" style="width: 8%; height: auto;">{{ event.venue.city }}, {{ event.venue.state }}</li>
-										</ul>
-									</div>
-									<div class="fp_footer">
-										<ul class="fp_meta float-left mb0">
-											<li class="list-inline-item"><img src="images/icons/icon3.svg"></li>
-											<li class="list-inline-item">{{ event.category }}</li>
-										</ul>
-										<ul class="fp_meta float-right mb0">
-											<li class="list-inline-item"><a class="icon" href="#"><span class="flaticon-zoom"></span></a></li>
-											<li class="list-inline-item"><a class="icon" href="#"><span class="flaticon-love"></span></a></li>
-										</ul>
+										<p><img src="images/icons/date.png" alt="Date: " style="width: 8%; height: auto;"> {{ event.start_time|datetime }} - {{ event.end_time|datetime }}</p>
+										<p><img src="images/icons/time.png" alt="Time: " style="width: 8%; height: auto;">{{ event.start_time|time }} - {{ event.end_time|time }}</p>
+										<p><img src="images/icons/location.png" alt="Location: " style="width: 8%; height: auto;">{{ event.venue.city }}, {{ event.venue.state }}</p>
 									</div>
 								</div>
 							</div>
