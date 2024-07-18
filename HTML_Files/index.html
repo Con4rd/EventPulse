@@ -591,7 +591,7 @@
 						<p>Discover some of the most popular listings in your city.</p>
 					</div>
 				</div>
-				<!-- Start of debug code -->
+				<!-- Start of debug code
 				<div class="col-lg-12 mb-5">
 					<h2>Featured Events Debug:</h2>
 					<pre>{{ featured_events|tojson }}</pre>
@@ -607,7 +607,7 @@
 					<div>{{ event.name }}</div>
 					{% endfor %}
 				</div>
-				<!-- End of debug code -->
+				 End of debug code -->
 				<div class="col-lg-12">
 					<div class="col-lg-12">
 						<div class="popular_listing_slider1">
@@ -616,9 +616,13 @@
 								<div class="feat_property">
 									<div class="thumb">
 										{% if event.image_url %}
-										<img src="{{ event.image_url }}" alt="{{ event.name }}">
+										<a href="{{ event.ticket_url }}">
+											<img src="{{ event.image_url }}" alt="{{ event.name }}">
+										</a>
 										{% else %}
-										<img src="images/property/fp1.jpg" alt="default image">
+										<a href="{{ event.ticket_url }}">
+											<img src="images/property/fp1.jpg" alt="default image">
+										</a>
 										{% endif %}
 										<div class="thmb_cntnt">
 											{% if event.price %}

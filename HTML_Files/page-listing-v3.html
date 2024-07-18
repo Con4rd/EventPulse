@@ -784,12 +784,10 @@
 							<div class="col-md-6 col-lg-5">
 								<div class="listing_list_style tac-767">
 									<ul class="mb0">
-										<li class="list-inline-item dropdown text-left"><span class="stts">Short by: </span>
+										<li class="list-inline-item dropdown text-left"><span class="stts">Sort by: </span>
 											<select class="selectpicker">
 												<option>Default</option>
 												<option>Newest</option>
-												<option>Featured</option>
-												<option>Most Views</option>
 											</select>
 										</li>
 										<li class="list-inline-item gird"><a class="text-thm" href="#"><span class="fa fa-th-large"></span></a></li>
@@ -811,22 +809,52 @@
 									<img src="images/listing/lg1.jpg" alt="default image">
 									{% endif %}
 									<div class="thmb_cntnt">
-										<ul class="tag mb0">
-											<li class="list-inline-item"><a href="#">{{ event.category }}</a></li>
+										<ul class="tag mb0 thumb-list">
+											<a href="#">{{ event.category }}</a>
 										</ul>
 										<ul class="icon mb0">
-											<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.price.min }} - {{ event.price.max }}</a></li>
-											<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ ', '.join(event.source) }}</a></li>
+											{% if event.price.min or event.price.max %}
+											<a href="{{ event.ticket_url }}">
+												{% if event.price.min and event.price.max %}
+												${{ event.price.min }} - ${{ event.price.max }}
+												{% elif event.price.min %}
+												${{ event.price.min }}
+												{% elif event.price.max %}
+												${{ event.price.max }}
+												{% endif %}
+											</a>
+											{% endif %}
+										</ul>
+										<ul class="tag2 mb0">
+											{% if event.source is iterable and not event.source is string %}
+											<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.source[0] }}</a></li>
+											{% else %}
+											<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.source }}</a></li>
+											{% endif %}
 										</ul>
 									</div>
 								</div>
 								<div class="details">
 									<div class="tc_content">
 										<h4><a href="{{ event.ticket_url }}">{{ event.name }}</a></h4>
+										{% if event.description %}
 										<p>{{ event.description }}</p>
+										{% endif %}
 										<p>{{ event.venue.name }}</p>
-										<p><img src="images/icons/date.png" alt="Date: " style="width: 8%; height: auto;"> {{ event.start_time|datetime }} - {{ event.end_time|datetime }}</p>
-										<p><img src="images/icons/time.png" alt="Time: " style="width: 8%; height: auto;">{{ event.start_time|time }} - {{ event.end_time|time }}</p>
+										<p>
+											<img src="images/icons/date.png" alt="Date: " style="width: 8%; height: auto;">
+											{{ event.start_time|datetime }}
+											{% if event.end_time %}
+											- {{ event.end_time|datetime }}
+											{% endif %}
+										</p>
+										<p>
+											<img src="images/icons/time.png" alt="Time: " style="width: 8%; height: auto;">
+											{{ event.start_time|time }}
+											{% if event.end_time %}
+											- {{ event.end_time|time }}
+											{% endif %}
+										</p>
 										<p><img src="images/icons/location.png" alt="Location: " style="width: 8%; height: auto;">{{ event.venue.city }}, {{ event.venue.state }}</p>
 									</div>
 								</div>
