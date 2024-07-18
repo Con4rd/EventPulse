@@ -16558,6 +16558,28 @@ width: 80px; height: 80px; border-radius: 8px;
 }
 
 
+.event_info {
+  margin-top: 10px;
+}
+
+.event_detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.event_icon {
+  margin-right: 10px;
+  flex-shrink: 0;
+  max-width: 20px; /* This ensures the icon doesn't get too large on wider screens */
+}
+
+.event_detail span {
+  flex: 1;
+  min-width: 0; /* This allows the text to shrink if necessary */
+}
+
+
 
 
 

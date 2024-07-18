@@ -67,104 +67,8 @@
 		        <ul id="respMenu" class="ace-responsive-menu text-right" data-menu-style="horizontal">
 		            <li>
 		                <a href="index.html"><span class="title">Home</span></a>
-
-					<li>
-		                <a href="#"><span class="title">Explore</span></a>
-		                <!-- Level Two-->
-	                	<ul>
-                            <li><a href="page-author-single.html">Author Single</a></li>
-                            <li><a href="page-city-single.html">City Single</a></li>
-                            <li><a href="page-add-new-listing.html">New Listing</a></li>
-	                	</ul>
-		            </li>
-		            <li>
-		                <a href="#"><span class="title">Listing</span></a>
-		                <ul>
-		                    <li>
-		                        <a href="#">Listing Styles</a>
-		                        <!-- Level Three-->
-		                        <ul>
-		                            <li><a href="page-listing-v1.html">Listing v1</a></li>
-		                            <li><a href="page-listing-v2.html">Listing v2</a></li>
-		                            <li><a href="page-listing-v3.html">Listing v3</a></li>
-		                            <li><a href="page-listing-v4.html">Listing v4</a></li>
-		                            <li><a href="page-listing-v5.html">Listing v5</a></li>
-		                        </ul>
-		                    </li>
-		                    <li>
-		                        <a href="#">Listing Map</a>
-		                        <!-- Level Three-->
-		                        <ul>
-		                            <li><a href="page-listing-v6.html">Map v1</a></li>
-		                            <li><a href="page-listing-v7.html">Map v2</a></li>
-		                            <li><a href="page-listing-v8.html">Map v3</a></li>
-		                            <li><a href="page-listing-v9.html">Map v4</a></li>
-		                        </ul>
-		                    </li>
-		                    <li>
-		                        <a href="#">Listing Single</a>
-		                        <!-- Level Three-->
-		                        <ul>
-		                            <li><a href="page-listing-single-v1.html">Single V1</a></li>
-		                            <li><a href="page-listing-single-v2.html">Single V2</a></li>
-		                            <li><a href="page-listing-single-v3.html">Single V3</a></li>
-		                        </ul>
-		                    </li>
-                            <li><a href="page-add-new-listing.html">New Listing</a></li>
-		                </ul>
-		            </li>
-		            <li>
-		                <a href="#"><span class="title">Pages</span></a>
-		                <ul>
-				            <li>
-				                <a href="#"><span class="title">Shop Pages</span></a>
-				                <ul>
-				                    <li><a href="page-shop.html">Shop</a></li>
-				                    <li><a href="page-shop-single.html">Shop Single</a></li>
-				                    <li><a href="page-shop-cart.html">Cart</a></li>
-				                    <li><a href="page-shop-checkout.html">Checkout</a></li>
-				                    <li><a href="page-shop-order.html">Order</a></li>
-				                </ul>
-				            </li>
-		                    <li><a href="page-about.html">About Us</a></li>
-		                    <li><a href="page-contact.html">Contact</a></li>
-		                    <li><a href="page-coming-soon.html">Coming Soon</a></li>
-		                    <li>
-		                        <a href="#">User Dashboard</a>
-		                        <ul>
-						            <li><a href="page-my-dashboard.html">Dashboard</a></li>
-				                    <li><a href="page-profile.html">My Profile</a></li>
-				                    <li><a href="page-my-listing.html">My Listings</a></li>
-				                    <li><a href="page-my-bookmark.html">Bookmarks</a></li>
-				                    <li><a href="page-message.html">Messages</a></li>
-				                    <li><a href="page-my-review.html">Reviews</a></li>
-				                    <li><a href="page-add-new-listing.html">Add New Property</a></li>
-		                        </ul>
-		                    </li>
-		                    <li><a href="page-gallery.html">Gallery</a></li>
-		                    <li><a href="page-faq.html">Faq</a></li>
-		                    <li><a href="page-invoice.html">Invoice</a></li>
-		                    <li><a href="page-login.html">LogIn</a></li>
-			                <li><a href="page-pricing.html">Pricing V1</a></li>
-			                <li><a href="page-pricing2.html">Pricing V2</a></li>
-		                    <li><a href="page-register.html">Register</a></li>
-		                    <li><a href="page-error.html">404 Page</a></li>
-		                    <li><a href="page-terms.html">Terms and Conditions</a></li>
-		                    <li><a href="page-ui-element.html">UI Elements</a></li>
-		                </ul>
-		            </li>
-		            <li>
-		                <a href="#"><span class="title">Blog</span></a>
-		                <ul>
-		                    <li><a href="page-blog-grid.html">Blog Grid</a></li>
-		                    <li><a href="page-blog-grid-sidebar.html">Blog Grid Sidebar</a></li>
-		                    <li><a href="page-blog-details.html">Blog Details</a></li>
-		                    <li><a href="page-blog-list.html">Blog List</a></li>
-		                    <li><a href="page-blog-single.html">Blog Single</a></li>
-		                </ul>
 		            </li>
 	                <li class="list-inline-item list_s"><a href="#" class="btn flaticon-avatar" data-toggle="modal" data-target=".bd-example-modal-lg"> <span class="dn-1200">Login/Sign Up</span></a></li>
-	                <li class="list-inline-item add_listing"><a href="page-add-new-listing.html"><span class="icon">+</span><span class="dn-lg"> Add Listing</span></a></li>
 		        </ul>
 		    </nav>
 		</div>
@@ -616,58 +520,71 @@
 								<div class="feat_property">
 									<div class="thumb">
 										{% if event.image_url %}
-										<a href="{{ event.ticket_url }}">
-											<img src="{{ event.image_url }}" alt="{{ event.name }}">
-										</a>
+										<img src="{{ event.image_url }}" alt="{{ event.name }}">
 										{% else %}
-										<a href="{{ event.ticket_url }}">
-											<img src="images/property/fp1.jpg" alt="default image">
-										</a>
+										<img src="images/listing/lg1.jpg" alt="default image">
 										{% endif %}
 										<div class="thmb_cntnt">
-											{% if event.price %}
-											{% if event.price.min is defined %}
-											<ul class="tag mb0">
-												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.price.min }} - {{ event.price.max }}</a></li>
+											<ul class="tag mb0 thumb-list">
+												<a href="#">{{ event.category }}</a>
 											</ul>
-											{% elif event.price.get('min') is defined %}
-											<ul class="tag mb0">
-												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.price.get('min') }} - {{ event.price.get('max') }}</a></li>
+											<ul class="icon mb0">
+												{% if event.price.min or event.price.max %}
+												<a href="{{ event.ticket_url }}">
+													{% if event.price.min and event.price.max %}
+													${{ event.price.min }} - ${{ event.price.max }}
+													{% elif event.price.min %}
+													${{ event.price.min }}
+													{% elif event.price.max %}
+													${{ event.price.max }}
+													{% endif %}
+												</a>
+												{% endif %}
 											</ul>
-											{% endif %}
-											{% endif %}
 											<ul class="tag2 mb0">
+												{% if event.source is iterable and not event.source is string %}
+												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.source[0] }}</a></li>
+												{% else %}
 												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.source }}</a></li>
+												{% endif %}
 											</ul>
-											<a class="fp_price" href="{{ event.ticket_url }}">Featured</a>
 										</div>
 									</div>
 									<div class="details">
 										<div class="tc_content">
 											<h4><a href="{{ event.ticket_url }}">{{ event.name }}</a></h4>
-											{% if event.venue %}
-											<p>{{ event.venue.get('name', '') }}</p>
-											<ul class="prop_details mb0">
-												<li><a href="#">{{ event.venue.get('address', {}).get('line1', '') }}</a></li>
-												<li><a href="#">{{ event.venue.get('city', '') }}, {{ event.venue.get('state', '') }}</a></li>
-											</ul>
+											{% if event.description %}
+											<p>{{ event.description }}</p>
 											{% endif %}
-										</div>
-										<div class="fp_footer">
-											<ul class="fp_meta float-left mb0">
-												<li class="list-inline-item"><a href="{{ event.ticket_url }}">{{ event.category }}</a></li>
-											</ul>
-											<ul class="fp_meta float-right mb0">
-												<li class="list-inline-item"><a class="icon" href="{{ event.ticket_url }}"><span class="flaticon-zoom"></span></a></li>
-												<li class="list-inline-item"><a class="icon" href="{{ event.ticket_url }}"><span class="flaticon-love"></span></a></li>
-											</ul>
+											<p>{{ event.venue.name }}</p>
+											<div class="event_info">
+												<div class="event_detail">
+													<img src="images/icons/date.png" alt="Date: " class="event_icon" style="width: 8%; height: auto;">
+													<span data-datetime="{{ event.start_time }}">{{ event.start_time|datetime }}
+            										{% if event.end_time %} - {{ event.end_time|datetime }}{% endif %}</span>
+												</div>
+												<div class="event_detail">
+													<img src="images/icons/time.png" alt="Time: " class="event_icon" style="width: 8%; height: auto;">
+													<span>{{ event.start_time|time }}
+            										{% if event.end_time %} - {{ event.end_time|time }}{% endif %}</span>
+												</div>
+												<div class="event_detail">
+													<img src="images/icons/location.png" alt="Location: " class="event_icon" style="width: 8%; height: auto;">
+													<span>
+              											{% if event.source == 'Ticketmaster' %}
+                  											{{ event.venue.city.name }}, {{ event.venue.state.stateCode }}
+               											{% else %}
+                  											{{ event.venue.city }}, {{ event.venue.state }}
+               											{% endif %}
+            										</span>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 							{% endfor %}
 						</div>
-
 					</div>
 				</div>
 			</div>
