@@ -956,6 +956,11 @@
             var search = $('input[name="search"]').val().trim();
             var location = $('input[name="location"]').val().trim();
 
+            // Ensure location is provided
+            if (!location) {
+                alert('Please enter a location.');
+                return false; // Prevent form submission
+            }
 
             // Build the URL dynamically based on inputs
             var url = '/search?location=' + encodeURIComponent(location);
