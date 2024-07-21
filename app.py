@@ -7,10 +7,21 @@ from difflib import SequenceMatcher
 from datetime import datetime
 import random
 from search_utils import search_events
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Create a Flask application instance
 app = Flask(__name__, static_folder='HTML_Files', template_folder='HTML_Files')
 app.secret_key = secrets.token_hex(32)
+
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["300 per day"],
+    storage_uri="memory://",
+)
+
 
 # Configuration for APIs
 TICKETMASTER_API_KEY = 'qDV0IOLql9ch2aHpyV5ThqHeXjG5Glcg'
@@ -36,6 +47,7 @@ def log_event(event):
     print("-" * 50)
 
 @app.route('/api/events', methods=['GET'])
+@limiter.limit("300 per day", error_message="Daily request exceeded. Please try again tomorrow.")
 def get_events():
     city = request.args.get('city', 'Anchorage')
     search_term = request.args.get('search', '').lower()

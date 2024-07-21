@@ -958,7 +958,7 @@
 
             // Ensure location is provided
             if (!location) {
-                alert('Please enter a location.');
+                alert('Please fill out this field.');
                 return false; // Prevent form submission
             }
 
