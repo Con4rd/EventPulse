@@ -8,6 +8,7 @@ from datetime import datetime
 import random
 from search_utils import search_events
 
+# Create a Flask application instance
 app = Flask(__name__, static_folder='HTML_Files', template_folder='HTML_Files')
 app.secret_key = secrets.token_hex(32)
 
@@ -39,16 +40,20 @@ def get_events():
     city = request.args.get('city', 'Anchorage')
     search_term = request.args.get('search', '').lower()
 
+    # Fetch events from Ticketmaster and Yelp APIs
     tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, city)
     yelp_events = fetch_yelp_events(YELP_API_KEY, city)
 
+    # Aggregate events from both APIs
     aggregated_events = aggregate_events(tm_events, yelp_events)
 
+    # Filter events based on the search term if provided
     if search_term:
         filtered_events = search_events(aggregated_events, search_term)
     else:
         filtered_events = aggregated_events
 
+    # Prepare the event data for response
     events_data = [
         {
             'id': event['id'],
@@ -84,11 +89,14 @@ def search():
     else:
         location = city
 
+    # Fetch events from Ticketmaster and Yelp APIs
     tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, location)
     yelp_events = fetch_yelp_events(YELP_API_KEY, location)
 
+    # Aggregate events from both APIs
     aggregated_events = aggregate_events(tm_events, yelp_events)
 
+    # Filter events based on the search term if provided
     if search_term:
         filtered_events = search_events(aggregated_events, search_term)
     else:
@@ -300,4 +308,5 @@ if __name__ == '__main__':
     print("Visit http://localhost:5000/api/events to view the aggregated events")
     print("Visit http://localhost:5000/all_events to see all event data in the browser")
     print("Visit http://localhost:5000/api/events?city=Los+Angeles to see events in Los Angeles")
+    print("Visit http://localhost:5000/location to test the location endpoint")
     app.run(debug=True)
