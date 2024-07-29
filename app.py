@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, send_from_directory, jsonify, request, json
 import secrets
 from geopy.geocoders import Nominatim
@@ -88,22 +89,31 @@ def get_events():
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('search', '').strip()
-    city = request.args.get('location', '').strip()
+    location = request.args.get('location', '').strip()
 
-    if not city:
-        return render_template('page-listing-v3.html', events=[], search_term=search_term, city=city, event_count=0)
+    print(f"Received search request - Term: {search_term}, Location: {location}")
 
-    # Attempt to get state and country information
-    user_locale = get_user_location(request.remote_addr)
-    if user_locale:
-        city, state, country = user_locale
-        location = f"{city}, {state}, {country}"
-    else:
-        location = city
+    if not location or location.lower() in ['unknown', 'undefined']:
+        # Use IP-based geolocation as a fallback
+        ip = request.remote_addr
+        print(f"Using IP-based geolocation. IP: {ip}")
+        try:
+            response = requests.get(f'https://ipapi.co/{ip}/json/')
+            data = response.json()
+            city = data.get('city', 'Philadelphia')
+            state = data.get('region', 'Pennsylvania')
+            location = f"{city}, {state}"
+            print(f"IP-based geolocation result: {location}")
+        except Exception as e:
+            print(f"Error in IP geolocation: {e}")
+            location = "Philadelphia, Pennsylvania"  # Default fallback
+
+    # Split location into city and state
+    city, state = location.split(', ') if ', ' in location else (location, '')
 
     # Fetch events from Ticketmaster and Yelp APIs
-    tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, location)
-    yelp_events = fetch_yelp_events(YELP_API_KEY, location)
+    tm_events = fetch_ticketmaster_events(TICKETMASTER_API_KEY, city)
+    yelp_events = fetch_yelp_events(YELP_API_KEY, city)
 
     # Aggregate events from both APIs
     aggregated_events = aggregate_events(tm_events, yelp_events)
@@ -114,8 +124,9 @@ def search():
     else:
         filtered_events = aggregated_events
 
-    return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city, event_count=len(filtered_events))
+    print(f"Found {len(filtered_events)} events for {city}")
 
+    return render_template('page-listing-v3.html', events=filtered_events, search_term=search_term, city=city, event_count=len(filtered_events))
 @app.route('/location', methods=['POST'])
 def handle_location():
     data = request.get_json()
